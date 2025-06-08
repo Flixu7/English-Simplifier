@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text Simplifier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-purple: #9d00ff;
+      --dark-bg: #0a0a0a;
+      --darker-bg: #050505;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 20px;
+      width: 300px;
+      margin: 0;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      animation: borderGlow 2s linear infinite;
+    }
+
+    @keyframes borderGlow {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 24px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      background: var(--darker-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      border-radius: 8px;
+      appearance: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    select:hover {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 15px rgba(0,243,255,0.2);
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 20px rgba(157,0,255,0.3);
+    }
+
+    .select-wrapper::after {
+      content: '▼';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--neon-blue);
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--darker-bg);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    button {
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,243,255,0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .info {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .glow {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .glow-1 {
+      top: -50px;
+      left: -50px;
+    }
+
+    .glow-2 {
+      bottom: -50px;
+      right: -50px;
+      background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="container">
+    <h3>Text Simplifier</h3>
+    <div class="select-wrapper">
+      <select id="level">
+        <option value="A1">A1 (Beginner)</option>
+        <option value="A2">A2 (Elementary)</option>
+        <option value="B1">B1 (Intermediate)</option>
+        <option value="B2">B2 (Upper Intermediate)</option>
+        <option value="C1">C1 (Advanced)</option>
+        <option value="C2">C2 (Mastery)</option>
+      </select>
+    </div>
+    <div class="toggle-wrapper">
+      <span class="toggle-label">Show Original Text</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="showOriginal">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <button id="simplify">Simplify Page</button>
+    <div class="info">
+      Select your target CEFR level and click "Simplify Page" to simplify the text on the current webpage.
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
